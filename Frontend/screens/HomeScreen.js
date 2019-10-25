@@ -61,7 +61,7 @@ export default function HomeScreen() {
       
       <View style={styles.tabBarInfoContainer}>
         <Text style={styles.tabBarInfoText}>
-          This i a tab bar. You can edt it in
+          This i a tabs bar
         </Text>
 
         <View
