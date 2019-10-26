@@ -1,23 +1,25 @@
-import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import {
   Image,
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   ToolbarAndroid,
   View,
+  StatusBar,
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
-import { VictoryLine, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 import { Grid, LineChart, XAxis, YAxis } from 'react-native-svg-charts'
-import {TopNavigationContainer} from '../components/TopNavigationContainer.js';
+import { TopNavigationActionsShowcase } from '../components/TopNavigationContainer';
 import {
   Layout,
+  Text,
+  Icon,
+  Button,
 } from 'react-native-ui-kitten';
+import { tsThisType } from '@babel/types';
 const data2 = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -30,15 +32,63 @@ const data = [0, 50, 10, 40, 95, 4, 24, 85]
 const axesSvg = { fontSize: 10, fill: 'grey' };
 const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
-export default function HomeScreen() {
-  return (
-    <Layout style={styles.container}>
 
-        <TopNavigationContainer />
+const MenuIcon = (style) => (
+  <Icon name='menu-outline' {...style} />
+);
 
-        <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
+export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      weeklyChart: {
+        loading: false,
+        data: undefined
+      }
+    }
+  }
+
+  componentDidMount() {
+    this.fetchWeeklyData();
+  }
+  fetchWeeklyData = () => {
+    this.setState({ weeklyChart: { ...this.state.weeklyChart, loading: true } })
+    fetch("http://194.94.239.60:8080/graphWeeḱly/user124")
+      .then(response => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        this.setState({ weeklyChart: { loading: false, data: responseJson.history.map((item) => {
+          return parseFloat(item);
+        }) } })
+      })
+      .catch(error => console.log(error));
+  }
+  fetchForecastData = () => {
+    fetch("http://194.94.239.36:5000/forecast", {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userid: "user124" }),
+    })
+      .then(response => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        this.setState({ weeklyChart: { loading: false, data: [0, 50, 10, 40, 95, 4, 24, 85] } })
+      })
+      .catch(error => console.log(error));
+  }
+  render() {
+    const { weeklyChart } = this.state;
+    return (
+      <Layout style={styles.container}>
+        {/* <TopNavigationActionsShowcase /> */}
+        <Text>Your Weekly Consumption:</Text>
+        {weeklyChart.loading && <Text>Loading...</Text>}
+        {weeklyChart.data != undefined && <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
           <YAxis
-            data={data}
+            data={weeklyChart.data}
             style={{ marginBottom: xAxisHeight }}
             contentInset={verticalContentInset}
             svg={axesSvg}
@@ -46,7 +96,7 @@ export default function HomeScreen() {
           <View style={{ flex: 1, marginLeft: 10 }}>
             <LineChart
               style={{ flex: 1 }}
-              data={data}
+              data={weeklyChart.data}
               contentInset={verticalContentInset}
               svg={{ stroke: 'rgb(134, 65, 244)' }}
             >
@@ -54,19 +104,22 @@ export default function HomeScreen() {
             </LineChart>
             <XAxis
               style={{ marginHorizontal: -10, height: xAxisHeight }}
-              data={data}
+              data={weeklyChart.data}
               formatLabel={(value, index) => index}
               contentInset={{ left: 10, right: 10 }}
               svg={axesSvg}
             />
           </View>
         </View>
+        }
       </Layout>
-  );
+    )
+  }
 }
 
 HomeScreen.navigationOptions = {
-  header: null,
+  headerTitle: "Home",
+  
 };
 
 function DevelopmentModeNotice() {
@@ -106,8 +159,8 @@ function handleHelpPress() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
   },
   developmentModeText: {
     marginBottom: 20,

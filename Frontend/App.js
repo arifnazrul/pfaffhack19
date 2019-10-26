@@ -5,7 +5,8 @@ import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { mapping, light as lightTheme } from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from 'react-native-ui-kitten';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { ApplicationProvider, IconRegistry, Layout, Text } from 'react-native-ui-kitten';
 import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
@@ -27,9 +28,12 @@ export default function App(props) {
     );
   } else {
     return (
-      <ApplicationProvider mapping={mapping} theme={lightTheme}>        
-        <AppNavigator />
-      </ApplicationProvider>
+      <React.Fragment>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider mapping={mapping} theme={lightTheme}>
+          <AppNavigator />
+        </ApplicationProvider>
+      </React.Fragment>
     );
   }
 }
