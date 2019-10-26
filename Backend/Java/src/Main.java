@@ -1,6 +1,9 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,7 +45,7 @@ public class Main {
             graph (user1);
         }
 
-        private static JSONObject buildRetrivalObject(String[] tags){
+        private static JSONObject buildRetrivalObject(JSONArray tags){
             JSONObject metadata = new JSONObject();
             metadata.put("creator","ecowarriors");
             metadata.put("tags",tags);
@@ -70,21 +73,37 @@ public class Main {
         public static JSONObject graph(JSONObject user){
             String user1=(String) user.get("user");
             String type = (String) user.get("type");
+            JSONArray co2returnData=null;
 
-            String [] tag =new String[2];
-            tag[0] ="namespace:ecowarriors-historical-data";
-            tag[1] = user1;
+            JSONArray tag =new JSONArray();
+            tag.add("namespace:ecowarriors-historical-data") ;
+            tag.add(user1);
 
             if (type.equals("weekly")){
-                Sender.sendPost(buildRetrivalObject(tag));
+                String retrive = Sender.sendPost(buildRetrivalObject(tag));
+                LinkedList<String> co2Values = new LinkedList<>();
+                int index = retrive.indexOf("CO2-total");
+                while (index >= 0) {
+                    System.out.print(index);
+                    System.out.print(": "+retrive.substring(index,index+12));
+                    int endNumber = retrive.indexOf("\"",index+12);
+                    co2Values.addFirst(retrive.substring(index+12,endNumber));
+                    index = retrive.indexOf("CO2-total", index + 1);
+                }
+                co2returnData =new JSONArray();
+                ListIterator<String> it = co2Values.listIterator(7);
+                for (int i=0;i<7;i++){
+                    co2returnData.add(it.previous());
+                }
             }else { if (type.equals("monthly")) {
 
                 }else {
 
                 }
             }
-
-            return null;
+            JSONObject graph = new JSONObject();
+            graph.put("history",co2returnData);
+            return graph;
         }
 
         private static void parseHistoricalDataObject(JSONObject histData)

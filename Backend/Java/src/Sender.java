@@ -5,11 +5,12 @@ import java.io.IOException;
 
 public class Sender {
 
-    public static void sendPost(JSONObject pay){
+    public static String sendPost(JSONObject pay){
     OkHttpClient client = new OkHttpClient();
+    String textResponds=null;
 
     MediaType mediaType = MediaType.parse("application/json");
-    RequestBody body = RequestBody.create(mediaType, "{\n\t\"type\": \"PersistDataCommand\",\n\t\"sender\": \"ecowarriors\",\n\t\"payload\": {\n\t\t\"force\": false,\n\t\t\"storageObject\": {\n\t\t\t\"metadata\": {\n\t\t\t\t\"tags\":[\"namespace:ecowarriors-historical-data\", \"user125\"]\n\t\t\t},\n\t\t\t\"data\":\n[{  \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\":\"5\", \"CO2-total\" :\"40\",\"timestemp\" :\"20190924\" },\n{ \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\": \"4\", \"CO2-total\" :\"40.5\",\"timestemp\" :\"20190925\" },\n{ \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\": \"3\", \"CO2-total\" :\"41.6\",\"timestemp\" :\"20190926\" },\n{  \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\": \"5\", \"CO2-total\" :\"42.5\",\"timestemp\" :\"20190927\" },\n{\"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern \", \"liter\": \"4\", \"CO2-total\" :\"45\",\"timestemp\" :\"20190928\" },\n{ \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\": \"3\", \"CO2-total\" :\"46.5\",\"timestemp\" :\"20190929\" },\n{ \"userid\": \"user125\", \"dist_r\": \"Triftstrasse 7;Kaiserslautern\", \"dist_to_r\": \"Trippstadter Strasse 18;Kaiserslautern\", \"liter\": \"5\", \"CO2-total\" :\"47\",\"timestemp\" :\"20190930\" }]\n\t\t\t\n\t\t}\n\t}\n}");
+    RequestBody body = RequestBody.create(mediaType,pay.toJSONString() );
     Request request = new Request.Builder()
             .url("http://194.94.239.125:9000/request")
             .post(body)
@@ -26,9 +27,12 @@ public class Sender {
             .build();
     try {
         Response response = client.newCall(request).execute();
+        //System.out.println("response"+response.body().string());
+        textResponds = response.body().string();
     }catch (IOException e){
         System.out.println("IO Exception");
     }
+        return textResponds;
     }
 
 }
