@@ -46,7 +46,7 @@ export default class LoginScreen extends Component {
           value={this.state.primaryValue}
           onChangeText={(password) => this.setState({ password })}
         />
-        <Button style={styles.input} status='success'>LOGIN</Button>
+        <Button style={styles.input} status='success' onPress={this.onLogin.bind(this)}>LOGIN</Button>
       </Layout>
     );
   }
