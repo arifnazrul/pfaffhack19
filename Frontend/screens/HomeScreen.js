@@ -7,13 +7,17 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  ToolbarAndroid,
   View,
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
 import { VictoryLine, VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 import { Grid, LineChart, XAxis, YAxis } from 'react-native-svg-charts'
-
+import {TopNavigationContainer} from '../components/TopNavigationContainer.js';
+import {
+  Layout,
+} from 'react-native-ui-kitten';
 const data2 = [
   { quarter: 1, earnings: 13000 },
   { quarter: 2, earnings: 16500 },
@@ -28,50 +32,36 @@ const verticalContentInset = { top: 10, bottom: 10 }
 const xAxisHeight = 30
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-          <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
-        <YAxis
-          data={data}
-          style={{ marginBottom: xAxisHeight }}
-          contentInset={verticalContentInset}
-          svg={axesSvg}
-        />
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <LineChart
-            style={{ flex: 1 }}
+    <Layout style={styles.container}>
+
+        <TopNavigationContainer />
+
+        <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
+          <YAxis
             data={data}
+            style={{ marginBottom: xAxisHeight }}
             contentInset={verticalContentInset}
-            svg={{ stroke: 'rgb(134, 65, 244)' }}
-          >
-            <Grid />
-          </LineChart>
-          <XAxis
-            style={{ marginHorizontal: -10, height: xAxisHeight }}
-            data={data}
-            formatLabel={(value, index) => index}
-            contentInset={{ left: 10, right: 10 }}
             svg={axesSvg}
           />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <LineChart
+              style={{ flex: 1 }}
+              data={data}
+              contentInset={verticalContentInset}
+              svg={{ stroke: 'rgb(134, 65, 244)' }}
+            >
+              <Grid />
+            </LineChart>
+            <XAxis
+              style={{ marginHorizontal: -10, height: xAxisHeight }}
+              data={data}
+              formatLabel={(value, index) => index}
+              contentInset={{ left: 10, right: 10 }}
+              svg={axesSvg}
+            />
+          </View>
         </View>
-      </View>
-      </ScrollView>
-      
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>
-          This i a tabs bar
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>
-            navigation/MainTabNavigator.js
-          </MonoText>
-        </View>
-      </View>
-    </View>
+      </Layout>
   );
 }
 

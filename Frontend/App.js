@@ -4,11 +4,18 @@ import * as Font from 'expo-font';
 import React, { useState } from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { mapping, light as lightTheme } from '@eva-design/eva';
+import { ApplicationProvider, Layout, Text } from 'react-native-ui-kitten';
 import AppNavigator from './navigation/AppNavigator';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
+  const ApplicationContent = () => (
+    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome to UI Kitten</Text>
+    </Layout>
+  );
+
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
@@ -20,10 +27,9 @@ export default function App(props) {
     );
   } else {
     return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+      <ApplicationProvider mapping={mapping} theme={lightTheme}>        
         <AppNavigator />
-      </View>
+      </ApplicationProvider>
     );
   }
 }
