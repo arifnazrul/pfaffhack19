@@ -26,14 +26,17 @@ def main(username, password):
 
         if password == getpass:
             print("{message : successful login}")
-            return json.dumps("{message : successful login},{userid : %s}" % username)
+            
+            return jsonify({'message': 'successful login', 'userid': username})
+            # return json.dumps("""{'message':'successful login','userid':'%s'}""" % username)
         else:
             print("{message : login failed}")
-            return json.dumps("{message : login failed}")
-        return ""
+            return jsonify({'message': 'login failed'})
+            
+        
     except Exception as e:
         print (e)
-        return json.dumps("{message : login failed}")
+        return jsonify({'message': 'login failed'})
          
 
 def getNamespace():
@@ -41,4 +44,4 @@ def getNamespace():
     return ""
 
 
-main("user124", "user124")
+# main("user124", "user124")

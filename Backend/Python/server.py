@@ -5,6 +5,7 @@ from flask import request
 from flask import json
 import loginService
 import formsService
+import suggestionService
 
 app = Flask(__name__)
 
@@ -26,7 +27,7 @@ def login_service():
     password = json_["password"]
     print (userid)
     
-    return jsonify(loginService.main(userid, password))
+    return loginService.main(userid, password)
 
 
 @app.route('/form', methods=['POST'])
@@ -45,10 +46,13 @@ def form_service():
     distFrom = json_["distFrom"]
     litresUsed = json_["litresUsed"]
 
-    return jsonify(formsService.saveForm(userid, model_p, carType_p, typeOfFuel_p, manDate_p, typeOfHeat_p, startHeat_p, endHeat_p, heatinLevel_p, distTo, distFrom, litresUsed))
+    return jsonify({"message" : formsService.saveForm(userid, model_p, carType_p, typeOfFuel_p, manDate_p, typeOfHeat_p, startHeat_p, endHeat_p, heatinLevel_p, distTo, distFrom, litresUsed)})
 
+@app.route('/suggestion', methods=['POST'])
+def suggestion_service():
 
+    return suggestionService.main()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
  
