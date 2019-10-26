@@ -11,11 +11,10 @@ import org.json.simple.parser.ParseException;
 
 public class Main {
 
-
         @SuppressWarnings("unchecked")
         public static void main(String[] args)
         {
-            //JSON parser object to parse read file
+            /*//JSON parser object to parse read file
             JSONParser jsonParser = new JSONParser();
 
             try (FileReader reader = new FileReader("test.json"))
@@ -34,7 +33,13 @@ public class Main {
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
-            }
+            }*/
+
+            JSONObject user1 =new JSONObject();
+            user1.put("user","user123");
+            user1.put("type","weekly");
+
+            graph (user1);
         }
 
         private static JSONObject buildRetrivalObject(String[] tags){
@@ -53,9 +58,11 @@ public class Main {
             String type ="RetrieveDataByExampleCommand";
 
             JSONObject res = new JSONObject();
-            res.put("type",type);
-            res.put("sender",sender);
             res.put("payload",payload);
+            res.put("sender",sender);
+            res.put("type",type);
+
+            System.out.println(res.toJSONString());
 
             return res;
         }
@@ -64,8 +71,12 @@ public class Main {
             String user1=(String) user.get("user");
             String type = (String) user.get("type");
 
-            if (type.equals("weekly")){
+            String [] tag =new String[2];
+            tag[0] ="namespace:ecowarriors-historical-data";
+            tag[1] = user1;
 
+            if (type.equals("weekly")){
+                Sender.sendPost(buildRetrivalObject(tag));
             }else { if (type.equals("monthly")) {
 
                 }else {
