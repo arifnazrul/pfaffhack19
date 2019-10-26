@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
-import { Grid, LineChart, XAxis, YAxis,  BarChart } from 'react-native-svg-charts'
+import { Grid, LineChart, XAxis, YAxis, BarChart } from 'react-native-svg-charts'
 import { TopNavigationActionsShowcase } from '../components/TopNavigationContainer';
 import {
   Layout,
@@ -57,9 +57,13 @@ export default class HomeScreen extends React.Component {
       .then(response => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-        this.setState({ weeklyChart: { loading: false, data: responseJson.history.map((item) => {
-          return parseFloat(item);
-        }) } })
+        this.setState({
+          weeklyChart: {
+            loading: false, data: responseJson.history.map((item) => {
+              return parseFloat(item);
+            })
+          }
+        })
       })
       .catch(error => console.log(error));
   }
@@ -81,29 +85,29 @@ export default class HomeScreen extends React.Component {
   }
   render() {
     const { weeklyChart } = this.state;
-    const data = [ 10, 5, 25, 15, 20 ]
+    const data = [10, 5, 25, 15, 20]
 
-        const CUT_OFF = 20
-        const Labels = ({ x, y, bandwidth, data }) => (
-            data.map((value, index) => (
-                <Text
-                    key={ index }
-                    x={ x(index) + (bandwidth / 2) }
-                    y={ value < CUT_OFF ? y(value) - 10 : y(value) + 15 }
-                    fontSize={ 14 }
-                    fill={ value >= CUT_OFF ? 'white' : 'black' }
-                    alignmentBaseline={ 'middle' }
-                    textAnchor={ 'middle' }
-                >
-                    {value}
-                </Text>
-            ))
-        )
+    const CUT_OFF = 20
+    const Labels = ({ x, y, bandwidth, data }) => (
+      data.map((value, index) => (
+        <Text
+          key={index}
+          x={x(index) + (bandwidth / 2)}
+          y={value < CUT_OFF ? y(value) - 10 : y(value) + 15}
+          fontSize={14}
+          fill={value >= CUT_OFF ? 'white' : 'black'}
+          alignmentBaseline={'middle'}
+          textAnchor={'middle'}
+        >
+          {value}
+        </Text>
+      ))
+    )
 
     return (
       <Layout style={styles.container}>
         {/* <TopNavigationActionsShowcase /> */}
-        <Text>Your Weekly Consumption:</Text>
+        <Text style={{ fontWeight: "bold" }}>Your Weekly Consumption:</Text>
         {weeklyChart.loading && <Text>Loading...</Text>}
         {weeklyChart.data != undefined && <View style={{ height: 200, padding: 20, flexDirection: 'row' }}>
           <YAxis
@@ -131,18 +135,35 @@ export default class HomeScreen extends React.Component {
           </View>
         </View>
         }
-         <View style={{ flexDirection: 'row', height: 200, paddingVertical: 16 }}>
-                <BarChart
-                    style={{ flex: 1 }}
-                    data={data}
-                    svg={{ fill: 'rgba(134, 65, 244, 0.8)' }}
-                    contentInset={{ top: 10, bottom: 10 }}
-                    spacing={0.2}
-                    gridMin={0}
-                >
-                    <Grid direction={Grid.Direction.HORIZONTAL}/>
-                </BarChart>
-            </View>
+        <Text style={{ fontWeight: "bold" }}>Your Monthly Consumption:</Text>
+
+        <View style={{ flexDirection: 'row', height: 200, paddingVertical: 16 }}>
+          <BarChart
+            style={{ flex: 1 }}
+            data={data}
+            svg={{ fill: 'rgba(134, 65, 244, 0.8)' }}
+            contentInset={{ top: 10, bottom: 10 }}
+            spacing={0.2}
+            gridMin={0}
+          >
+            <Grid direction={Grid.Direction.HORIZONTAL} />
+          </BarChart>
+        </View>
+        {weeklyChart.data && <Text style={{ fontWeight: "bold", paddingBottom: 10, color: "green" }}>Forecast: {weeklyChart.data[Math.floor(Math.random() * weeklyChart.data.length)]} kg CO2</Text>}
+
+        <Button style={{...styles.input, paddingBottom: 10}} icon={(style) => (
+          <Icon
+            name={'eye'}
+            {...style}
+          />
+        )} status='success'>View Suggestions</Button>
+        <Button style={styles.input} icon={(style) => (
+          <Icon
+            name={'share'}
+            {...style}
+          />
+        )} status='info'>Share</Button>
+
       </Layout>
     )
   }
