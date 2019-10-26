@@ -161,13 +161,17 @@ export default class QuestionScreen extends React.Component {
           onChangeText={(solar) => this.setState({solar})}
         />
         
-        <Button style={styles.input} status='success'>Submit</Button>
+        <Button style={styles.input} status='success' onPress={()=>{this.props.navigation.navigate('Home')}}>Submit</Button>
       </Layout>
       </ScrollView>
     );
   }
 }
 
+QuestionScreen.navigationOptions = {
+  headerTitle: "",
+  
+};
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 4,

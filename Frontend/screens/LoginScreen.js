@@ -39,7 +39,7 @@ export default class LoginScreen extends Component {
       .then((responseJson) => {
         console.log(responseJson);
         if (responseJson.userid) {
-          this.props.navigation.navigate('Home');
+          this.props.navigation.navigate('Question');
         } else {
           Alert.alert("Incorrect username of password");
         }
